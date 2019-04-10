@@ -1,4 +1,0 @@
-Login:mana62371@gmail.com
-Password:proj8931
-
-To mongoDB password : Proj8931#
