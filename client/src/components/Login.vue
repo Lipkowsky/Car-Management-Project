@@ -46,14 +46,14 @@
             this.email = ''
             this.password = ''
             router.push({name: 'Profile'})
+            this.emitMethod()
           }
         }).catch(err => {
           console.log(err)
         })
-        this.emitMethod()
       },
       emitMethod () {
-        //EventBus.$emit('logged-in', 'loggedin')
+        EventBus.$emit('logged-in', 'loggedin')
       }
     }
   }
