@@ -11,6 +11,24 @@
             {{errorMessage}}
         </div>
         <div class="form-group">
+            <label for="name">Imię</label>
+            <input
+            v-model="user.name"
+            type="text"
+            class="form-control"
+            id="name"
+            aria-describedby="nameHelp" placeholder="Imię" required>
+        </div>
+        <div class="form-group">
+            <label for="surname">Nazwisko</label>
+            <input
+            v-model="user.surname"
+            type="text"
+            class="form-control"
+            id="surname"
+            aria-describedby="surnameHelp" placeholder="Nazwisko" required>
+        </div>
+        <div class="form-group">
             <label for="username">Nazwa użytkownika</label>
             <input
             v-model="user.username"
@@ -54,6 +72,8 @@ const SIGNUP_URL = 'http://localhost:5000/auth/signup';
 
 const schema = Joi.object().keys({
     username: Joi.string().regex(/(^[a-zA-z0-9_]+$)/).min(2).max(30).required(),
+    name: Joi.string().regex(/^[A-Za-z]+$/).min(2).max(30).required(),
+    surname: Joi.string().regex(/^[A-Za-z]+$/).min(2).max(30).required(),
     password: Joi.string().min(6).required(),
     confirmPassword: Joi.string().min(6).required()
 });
@@ -64,6 +84,8 @@ export default {
         user: {
             username: '',
             password: '',
+            name: '',
+            surname: '',
             confirmPassword: '',
         },
     }),
@@ -83,6 +105,8 @@ export default {
                 const body = {
                     username: this.user.username,
                     password: this.user.password,
+                    name: this.user.name,
+                    surname: this.user.surname,
                 };
                 this.signingUp = true;
                 fetch(SIGNUP_URL, {
@@ -124,10 +148,18 @@ export default {
             if (result.error === null) {
                 return true;
             }
+            console.log(result.error);
             if (result.error.message.includes('username')) {
-                this.errorMessage = 'Username is invalid';
-            } else {
-                this.errorMessage = 'Password is invalid';
+                this.errorMessage = 'Nazwa użytkownika jest niewłaściwa';
+            }
+            if (result.error.message.includes('name')) {
+                this.errorMessage = 'Imię jest niewłaściwe';
+            } 
+            if (result.error.message.includes('surname')) {
+                this.errorMessage = 'Nazwisko jest niewłaściwe';
+            }  
+            else{
+                this.errorMessage = 'Hasło jest niewłaściwe';
             }
             return false;
         },

@@ -59,7 +59,7 @@ export default {
             if (this.validUser()) {
                 const body = {
                     username: this.user.username,
-                    password: this.user.password
+                    password: this.user.password,
                 };
                 fetch(LOGIN_URL, {
                     method: 'POST',
@@ -97,9 +97,9 @@ export default {
                 return true;
             }
             if (result.error.message.includes('username')) {
-                this.errorMessage = 'Username is invalid';
+                this.errorMessage = 'Nazwa użytkownika jest niewłaściwa';
             } else {
-                this.errorMessage = 'Password is invalid';
+                this.errorMessage = 'Hasło jest niewłaściwe';
             }
             return false;
         }

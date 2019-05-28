@@ -1,35 +1,32 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const cors = require('cors');
-
+const bodyParser = require('body-parser');
 const app = express();
+
+
 
 const middlewares = require('./auth/middlewares');
 
 const auth = require('./auth/index');
 const api_Users = require('./api/users');
+const api_Admin = require('./api/admin');
 
 
 app.use(volleyball);
 app.use(cors({
-  origin: 'http://localhost:8082'
+  origin: 'http://localhost:8080'
 }));
 
 
 
-
-
 app.use(express.json());
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(middlewares.checkTokenSetUser);
-
-
-
-
 
 app.use('/auth', auth);
 app.use('/api', middlewares.isLoggedIn , api_Users);
-
+app.use('/admin', middlewares.isAdminLoggedIn, api_Admin);
 
 
 
@@ -39,6 +36,10 @@ app.get('/', (req, res) => {
     user: req.user,
   });
 });
+
+
+
+
 
 function notFound(req, res, next) {
   res.status(404);
@@ -56,6 +57,9 @@ function errorHandler(err, req, res, next) {
 
 app.use(notFound);
 app.use(errorHandler);
+
+
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

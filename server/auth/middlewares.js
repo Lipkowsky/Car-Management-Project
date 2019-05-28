@@ -30,7 +30,25 @@ function isLoggedIn(req, res, next){
     }
 }
 
+function isAdminLoggedIn(req, res, next){
+    if(req.user){
+        if(req.user.role === 'ADMIN'){
+            next();
+        }else{
+            const error = new Error('Un-authorized - not admin');
+            res.status(401);
+            next(error);
+        }
+        
+    }else{
+        const error = new Error('Un-authorized - not admin');
+        res.status(401);
+        next(error);
+    }
+}
+
 module.exports = {
     checkTokenSetUser,
     isLoggedIn,
+    isAdminLoggedIn,
 };

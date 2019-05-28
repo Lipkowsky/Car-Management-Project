@@ -1,11 +1,11 @@
 <template>
 <div id="app">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <router-link class="navbar-brand" to="home"> Car Management Project</router-link>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+        <router-link class="nav-link" to="/">Strona główna</router-link>
+        <button @click="toogleActive" v-bind:class="{ 'navbar-toggler show': isActive, 'navbar-toggler': isNoActive }" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="true" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
-  </button>
-        <div class="collapse navbar-collapse" id="navbarColor03">
+        </button>
+        <div v-bind:class="{ 'navbar-collapse collapse show': isActive, 'navbar-collapse collapse': isNoActive }" id="navbarColor03" style="">
             <ul class="navbar-nav mr-auto">
                 <li v-if="!loggedIn" class="nav-item active">
                     <router-link class="nav-link" to="signup">Rejestracja</router-link>
@@ -14,7 +14,13 @@
                     <router-link class="nav-link" to="login">Logowanie</router-link>
                 </li>
                 <li v-if="loggedIn" class="navbar-nav mr-auto">
-                    <router-link class="nav-link" to="dashboard">Panel główny</router-link>
+                    <router-link class="nav-link" to="dashboard">Wybór samochodu</router-link>
+                </li>
+                <li v-if="loggedIn" class="navbar-nav mr-auto">
+                    <router-link class="nav-link" to="myTravels">Moje podróże</router-link>
+                </li>
+                <li v-if="isAdmin" class="navbar-nav mr-auto">
+                    <router-link class="nav-link" to="Admin">Admin panel</router-link>
                 </li>
             </ul>
             <div v-if="loggedIn" class="form-inline my-2 my-lg-0">
@@ -32,7 +38,10 @@ export default {
     data() {
         return {
             loggedIn: false,
+            isAdmin: false,
             user: {},
+            isActive: false,
+            isNoActive: true
         }
     },
     mounted() {
@@ -44,6 +53,11 @@ export default {
             .then(res => res.json())
             .then((result) => {
                 if (result.user) {
+                    if (this.user.role) {
+                        if (this.user.role === 'ADMIN') {
+                            this.isAdmin = true;
+                        }
+                    }
                     this.user = result.user;
                     this.loggedIn = true;
                 }
@@ -55,12 +69,21 @@ export default {
                 localStorage.removeItem('token');
                 this.$router.push('/login');
                 this.loggedIn = false;
+                this.isAdmin = false;
             }
         },
+        toogleActive() {
+            this.isActive = !this.isActive;
+        }
     },
 }
 </script>
 
 <style>
+@media screen and (max-width: 1024px) {
 
+    .nav-link {
+            padding: 0px;
+    }
+}
 </style>
